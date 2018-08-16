@@ -3,5 +3,7 @@ GUI implementation of DeadWood (by Cheapass Games). Implemented using Java's Swi
 
 # Building 
 git clone https://github.com/davidnach/DeadWoodBoardGame
+
 javac DeadWood.java
+
 java DeadWood
