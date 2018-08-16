@@ -7,6 +7,8 @@ DeadWood is a 2-8 player boardgame where actors participate in different scenes 
 # Building 
 
     git clone https://github.com/davidnach/DeadWoodBoardGame
+    
+    cd DeadWoodBoardGame
 
     javac DeadWood.java
 
