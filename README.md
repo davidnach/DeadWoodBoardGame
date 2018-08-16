@@ -1,2 +1,2 @@
 # DeadwoodBoardGame
-digital implementation of DeadWood (by Cheapass Games)
+GUI implementation of DeadWood (by Cheapass Games)
