@@ -17,29 +17,29 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class Controller	extends JLayeredPane{
+public class Controller extends JLayeredPane {
     private model.GameController game;
     private model.Actor currentActor;
     private model.CastingOffice castingOffice;
     private model.ExtraRoleInfo extraInfo;
     private DieRoll die;
-    private int	rank;
+    private int rank;
     private boolean moved;
     private boolean clicked;
 
-    public Controller(int x, int y,int h, int	w,
-                      model.GameController	game,	model.ExtraRoleInfo extraInfo) throws Exception{
-        this.game =	game;
+    public Controller(int x, int y, int h, int w,
+        model.GameController game, model.ExtraRoleInfo extraInfo) throws Exception {
+        this.game = game;
         this.castingOffice = new CastingOffice();
-        this.extraInfo	= extraInfo;
-        this.die =	new DieRoll(game);
-        this.currentActor	= game.getCurrentActor();
+        this.extraInfo = extraInfo;
+        this.die = new DieRoll(game);
+        this.currentActor = game.getCurrentActor();
         this.moved = false;
-        this.clicked =	false;
+        this.clicked = false;
 
-        setBounds(x,y,h,w);
+        setBounds(x, y, h, w);
         setOpaque(false);
-        add(die,new	Integer(2));
+        add(die, new Integer(2));
 
         initializeMoveButton();
         initializeActButton();
@@ -52,64 +52,64 @@ public class Controller	extends JLayeredPane{
 
     }
 
-    public void initializeExtraRoleButton(){
-        JComboBox<String> roleOptions =	new JComboBox<String>();
+    public void initializeExtraRoleButton() {
+        JComboBox < String > roleOptions = new JComboBox < String > ();
         roleOptions.setVisible(false);
-        roleOptions.setBounds(1227,380,150,20);
+        roleOptions.setBounds(1227, 380, 150, 20);
 
         roleOptions.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
                 currentActor = game.getCurrentActor();
-                JComboBox roleOptions =	(JComboBox)e.getSource();
-                String extraRole = (String)roleOptions.getSelectedItem();
+                JComboBox roleOptions = (JComboBox) e.getSource();
+                String extraRole = (String) roleOptions.getSelectedItem();
                 currentActor.becomeExtra();
-                (((SceneRoom)game.findRoom(currentActor.getCurrentRoom()))).addExtra(currentActor,currentActor.getRank(),extraRole);
+                (((SceneRoom) game.findRoom(currentActor.getCurrentRoom()))).addExtra(currentActor, currentActor.getRank(), extraRole);
                 roleOptions.setVisible(false);
                 game.incrementTurn();
-                moved	= false;
+                moved = false;
                 clicked = false;
             }
         });
 
-        add(roleOptions,new Integer(0));
+        add(roleOptions, new Integer(0));
 
-        JButton takeExtraRoleButton =	new JButton("Take Extra Role");
+        JButton takeExtraRoleButton = new JButton("Take Extra Role");
         takeExtraRoleButton.setBackground(Color.orange);
-        takeExtraRoleButton.setBounds(1227,350,200,30);
+        takeExtraRoleButton.setBounds(1227, 350, 200, 30);
         takeExtraRoleButton.addMouseListener(new MouseAdapter() {
 
-            public void	mouseEntered(MouseEvent	e)	{
-                currentActor =	game.getCurrentActor();
-                if(currentActor.isUnemployed() && currentActor.isInSceneRoom()){
+            public void mouseEntered(MouseEvent e) {
+                currentActor = game.getCurrentActor();
+                if (currentActor.isUnemployed() && currentActor.isInSceneRoom()) {
                     model.SceneRoom sceneroom = (model.SceneRoom) game.findRoom(currentActor.getCurrentRoom());
-                    if(!sceneroom.shotsComplete()	&&	sceneroom.hasExtraRoleAvailable(currentActor.getRank())){
+                    if (!sceneroom.shotsComplete() && sceneroom.hasExtraRoleAvailable(currentActor.getRank())) {
                         takeExtraRoleButton.setBackground(Color.GREEN);
                     }
                 }
             }
 
-            public void mouseExited(MouseEvent	e){
+            public void mouseExited(MouseEvent e) {
                 takeExtraRoleButton.setBackground(Color.orange);
             }
 
             public void mouseClicked(MouseEvent e) {
-                if(!clicked){
+                if (!clicked) {
                     clicked = true;
                     clicked();
                 }
             }
 
-            private void	clicked(){
+            private void clicked() {
                 System.out.println("clicked take extra role button");
-                currentActor =	game.getCurrentActor();
-                if(currentActor.isUnemployed() && currentActor.isInSceneRoom()){
+                currentActor = game.getCurrentActor();
+                if (currentActor.isUnemployed() && currentActor.isInSceneRoom()) {
                     model.SceneRoom sceneroom = (model.SceneRoom) game.findRoom(currentActor.getCurrentRoom());
-                    if(!sceneroom.shotsComplete()	&&	sceneroom.hasExtraRoleAvailable(currentActor.getRank())){
+                    if (!sceneroom.shotsComplete() && sceneroom.hasExtraRoleAvailable(currentActor.getRank())) {
                         model.Room currentRoom = game.findRoom(currentActor.getCurrentRoom());
-                        Collection<String> extraRoles	= ((SceneRoom)currentRoom).getExtraRoles(currentActor.getRank());
-                        Vector<String>	extraRolesVector = new Vector<String>(extraRoles);
-                        DefaultComboBoxModel	model	= new	DefaultComboBoxModel(extraRolesVector);
+                        Collection < String > extraRoles = ((SceneRoom) currentRoom).getExtraRoles(currentActor.getRank());
+                        Vector < String > extraRolesVector = new Vector < String > (extraRoles);
+                        DefaultComboBoxModel model = new DefaultComboBoxModel(extraRolesVector);
                         roleOptions.setModel(model);
                         roleOptions.setVisible(true);
                     }
@@ -117,94 +117,94 @@ public class Controller	extends JLayeredPane{
             };
         });
 
-        add(takeExtraRoleButton,new Integer(0));
+        add(takeExtraRoleButton, new Integer(0));
 
 
     }
 
 
-    public void initializeMainRoleButton(){
-        JComboBox<String> roleOptions =	new JComboBox<String>();
+    public void initializeMainRoleButton() {
+        JComboBox < String > roleOptions = new JComboBox < String > ();
         roleOptions.setVisible(false);
-        roleOptions.setBounds(1227,430,150,20);
-        add(roleOptions,new	Integer(0));
+        roleOptions.setBounds(1227, 430, 150, 20);
+        add(roleOptions, new Integer(0));
         roleOptions.addActionListener(new ActionListener() {
 
-            public void	actionPerformed(ActionEvent e){
-                Actor	currentActor =	game.getCurrentActor();
-                JComboBox roleOptions =	(JComboBox)e.getSource();
-                String mainRole =	(String)roleOptions.getSelectedItem();
+            public void actionPerformed(ActionEvent e) {
+                Actor currentActor = game.getCurrentActor();
+                JComboBox roleOptions = (JComboBox) e.getSource();
+                String mainRole = (String) roleOptions.getSelectedItem();
                 currentActor.becomeMainActor();
-                ((SceneRoom)game.findRoom(currentActor.getCurrentRoom())).getScene().addActorAtRoleName(currentActor,mainRole);
+                ((SceneRoom) game.findRoom(currentActor.getCurrentRoom())).getScene().addActorAtRoleName(currentActor, mainRole);
                 roleOptions.setVisible(false);
                 game.incrementTurn();
-                moved	= false;
+                moved = false;
                 clicked = false;
             }
         });
 
-        JButton takeMainRoleButton	= new	JButton("Take Main Role");
+        JButton takeMainRoleButton = new JButton("Take Main Role");
         takeMainRoleButton.setBackground(Color.orange);
-        takeMainRoleButton.setBounds(1227,400,200,30);
+        takeMainRoleButton.setBounds(1227, 400, 200, 30);
         takeMainRoleButton.addMouseListener(new MouseAdapter() {
 
-            public	void mouseEntered(MouseEvent e) {
-                model.Actor	currentActor =	game.getCurrentActor();
-                if(currentActor.isInSceneRoom() && currentActor.isUnemployed()){
+            public void mouseEntered(MouseEvent e) {
+                model.Actor currentActor = game.getCurrentActor();
+                if (currentActor.isInSceneRoom() && currentActor.isUnemployed()) {
                     model.SceneRoom sceneroom = (model.SceneRoom) game.findRoom(currentActor.getCurrentRoom());
-                    if(!sceneroom.shotsComplete()	&&	sceneroom.getScene().hasMainRoleAvailable(currentActor.getRank())){
+                    if (!sceneroom.shotsComplete() && sceneroom.getScene().hasMainRoleAvailable(currentActor.getRank())) {
                         takeMainRoleButton.setBackground(Color.GREEN);
                     }
 
                 }
             }
 
-            public	void mouseExited(MouseEvent e){
+            public void mouseExited(MouseEvent e) {
                 takeMainRoleButton.setBackground(Color.orange);
             }
 
-            public	void mouseClicked(MouseEvent e) {
-                if(!clicked){
+            public void mouseClicked(MouseEvent e) {
+                if (!clicked) {
                     clicked = true;
                     clicked();
                 }
             }
 
-            private void	clicked(){
+            private void clicked() {
                 System.out.println("clicked take main role");
-                model.Actor	currentActor =	game.getCurrentActor();
+                model.Actor currentActor = game.getCurrentActor();
                 String currentRoomName = currentActor.getCurrentRoom();
-                if((game.getCurrentActor().isUnemployed()	&&	game.getCurrentActor().isInSceneRoom())){
+                if ((game.getCurrentActor().isUnemployed() && game.getCurrentActor().isInSceneRoom())) {
                     model.SceneRoom sceneroom = (model.SceneRoom) game.findRoom(currentActor.getCurrentRoom());
-                    if(!sceneroom.shotsComplete()	&&	sceneroom.getScene().hasMainRoleAvailable(currentActor.getRank())){
-                        Collection<String> mainRoles = sceneroom.getMainRoleOptions(currentActor.getRank());
-                        Vector<String>	mainRolesVector =	new Vector<String>(mainRoles);
-                        DefaultComboBoxModel	model	= new	DefaultComboBoxModel(mainRolesVector);
+                    if (!sceneroom.shotsComplete() && sceneroom.getScene().hasMainRoleAvailable(currentActor.getRank())) {
+                        Collection < String > mainRoles = sceneroom.getMainRoleOptions(currentActor.getRank());
+                        Vector < String > mainRolesVector = new Vector < String > (mainRoles);
+                        DefaultComboBoxModel model = new DefaultComboBoxModel(mainRolesVector);
                         roleOptions.setModel(model);
                         roleOptions.setVisible(true);
                     }
                 }
             }
         });
-        add(takeMainRoleButton,new	Integer(0));
+        add(takeMainRoleButton, new Integer(0));
 
 
 
     }
 
 
-    public void initializeMoveButton(){
-        JComboBox<String>	moveOptions	= new	JComboBox<String>();
+    public void initializeMoveButton() {
+        JComboBox < String > moveOptions = new JComboBox < String > ();
         moveOptions.setVisible(false);
-        moveOptions.setBounds(1227,230,150,20);
-        add(moveOptions,new	Integer(0));
+        moveOptions.setBounds(1227, 230, 150, 20);
+        add(moveOptions, new Integer(0));
         moveOptions.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e){
-                Actor	currentActor =	game.getCurrentActor();
-                JComboBox moveOptions =	(JComboBox)e.getSource();
-                String roomName =	(String)moveOptions.getSelectedItem();
-                model.Room newRoom =	game.findRoom(roomName);
+            public void actionPerformed(ActionEvent e) {
+                Actor currentActor = game.getCurrentActor();
+                JComboBox moveOptions = (JComboBox) e.getSource();
+                String roomName = (String) moveOptions.getSelectedItem();
+                model.Room newRoom = game.findRoom(roomName);
                 game.findRoom(currentActor.getCurrentRoom()).removeActor(currentActor);
                 currentActor.changeRoom(roomName);
                 newRoom.addActor(currentActor);
@@ -212,68 +212,69 @@ public class Controller	extends JLayeredPane{
             }
         });
 
-        JButton move =	new JButton("Move");
+        JButton move = new JButton("Move");
         move.setBackground(Color.orange);
-        move.setBounds(1227,200,200,30);
+        move.setBounds(1227, 200, 200, 30);
         move.addMouseListener(new MouseAdapter() {
-            public	void mouseEntered(MouseEvent e) {
-                if(game.getCurrentActor().isUnemployed() && !moved){
+            public void mouseEntered(MouseEvent e) {
+                if (game.getCurrentActor().isUnemployed() && !moved) {
                     move.setBackground(Color.GREEN);
                 }
             }
 
-            public void mouseExited(MouseEvent	e){
+            public void mouseExited(MouseEvent e) {
                 move.setBackground(Color.orange);
             }
 
-            public	void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 clicked();
             }
 
-            private void	clicked(){
+            private void clicked() {
                 System.out.println("clicked move");
-                if(game.getCurrentActor().isUnemployed() && !moved){
-                    moved	= true;
-                    model.Actor	currentActor =	game.getCurrentActor();
+                if (game.getCurrentActor().isUnemployed() && !moved) {
+                    moved = true;
+                    model.Actor currentActor = game.getCurrentActor();
                     String currentRoomName = currentActor.getCurrentRoom();
                     model.Room currentRoom = game.findRoom(currentRoomName);
-                    Collection<String> adjacentRooms	= currentRoom.getAdjacentRooms();
-                    Vector<String>	adjacentRoomVector =	new Vector<String>(adjacentRooms);
-                    DefaultComboBoxModel	model	= new	DefaultComboBoxModel(adjacentRoomVector);
+                    Collection < String > adjacentRooms = currentRoom.getAdjacentRooms();
+                    Vector < String > adjacentRoomVector = new Vector < String > (adjacentRooms);
+                    DefaultComboBoxModel model = new DefaultComboBoxModel(adjacentRoomVector);
                     moveOptions.setModel(model);
                     moveOptions.setVisible(true);
                 }
-            }});
-        add(move,new Integer(0));
+            }
+        });
+        add(move, new Integer(0));
 
     }
 
-    public void initializeActButton(){
-        JButton act	= new	JButton("Act");
+    public void initializeActButton() {
+        JButton act = new JButton("Act");
         act.setBackground(Color.orange);
-        act.setBounds(1227,150,200,30);
-        add(act,new	Integer(0));
+        act.setBounds(1227, 150, 200, 30);
+        add(act, new Integer(0));
         act.addMouseListener(new MouseAdapter() {
 
-            public	void mouseEntered(MouseEvent e) {
-                if(!game.getCurrentActor().isUnemployed()){
+            public void mouseEntered(MouseEvent e) {
+                if (!game.getCurrentActor().isUnemployed()) {
                     act.setBackground(Color.GREEN);
                 }
             }
 
-            public	void mouseExited(MouseEvent e){
+            public void mouseExited(MouseEvent e) {
                 act.setBackground(Color.orange);
             }
 
-            public	void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 clicked();
             }
 
-            private void	clicked(){
+            private void clicked() {
                 System.out.println("clicked act");
-                if(!game.getCurrentActor().isUnemployed()	&&	!die.rollingForBonus()){
+                if (!game.getCurrentActor().isUnemployed() && !die.rollingForBonus()) {
                     die.activateRollButton();
-                    if(!die.rollingForBonus()){
+                    if (!die.rollingForBonus()) {
                         die.resetRoll();
                     }
                 }
@@ -282,28 +283,28 @@ public class Controller	extends JLayeredPane{
         });
     }
 
-    private	void initializeRehearseButton(){
+    private void initializeRehearseButton() {
         JButton rehearse = new JButton("Rehearse");
         rehearse.setBackground(Color.orange);
-        rehearse.setBounds(1227,250,200,30);
-        rehearse.addMouseListener(new	MouseAdapter()	{
+        rehearse.setBounds(1227, 250, 200, 30);
+        rehearse.addMouseListener(new MouseAdapter() {
 
-            public	void mouseEntered(MouseEvent e) {
-                if(!game.getCurrentActor().isUnemployed()){
+            public void mouseEntered(MouseEvent e) {
+                if (!game.getCurrentActor().isUnemployed()) {
                     rehearse.setBackground(Color.GREEN);
                 }
             }
 
-            public	void mouseExited(MouseEvent e){
+            public void mouseExited(MouseEvent e) {
                 rehearse.setBackground(Color.orange);
             }
 
-            public	void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 clicked();
             }
 
-            private void clicked(){
-                if(!game.getCurrentActor().isUnemployed()){
+            private void clicked() {
+                if (!game.getCurrentActor().isUnemployed()) {
                     game.getCurrentActor().rehearse();
                     System.out.println("clicked");
                     game.incrementTurn();
@@ -311,30 +312,30 @@ public class Controller	extends JLayeredPane{
             }
 
         });
-        add(rehearse,new Integer(0));
+        add(rehearse, new Integer(0));
 
 
     }
 
-    private	void initializeUpgradeRankButton(){
+    private void initializeUpgradeRankButton() {
 
-        JComboBox<String>	upg =	new JComboBox<String>();
+        JComboBox < String > upg = new JComboBox < String > ();
         upg.setVisible(false);
-        upg.setBounds(1227,330,150,20);
+        upg.setBounds(1227, 330, 150, 20);
         upg.addActionListener(new ActionListener() {
-            public void	actionPerformed(ActionEvent e){
-                Actor currentActor	= game.getCurrentActor();
-                if(currentActor.getCurrentRoom().equals("Casting Office")){
-                    JComboBox upg = (JComboBox)e.getSource();
-                    String upgradeOption	= (String)upg.getSelectedItem();
+            public void actionPerformed(ActionEvent e) {
+                Actor currentActor = game.getCurrentActor();
+                if (currentActor.getCurrentRoom().equals("Casting Office")) {
+                    JComboBox upg = (JComboBox) e.getSource();
+                    String upgradeOption = (String) upg.getSelectedItem();
                     Scanner sc = new Scanner(upgradeOption);
-                    int upgradeRank =	sc.useDelimiter("\\D+").nextInt();
-                    int cost	= sc.useDelimiter("\\D+").nextInt();
+                    int upgradeRank = sc.useDelimiter("\\D+").nextInt();
+                    int cost = sc.useDelimiter("\\D+").nextInt();
                     System.out.println(upgradeRank);
-                    if(upgradeOption.contains("dollars")){
-                        currentActor.updateWallet(-1 * cost,0);
+                    if (upgradeOption.contains("dollars")) {
+                        currentActor.updateWallet(-1 * cost, 0);
                     } else {
-                        currentActor.updateWallet(0,-1 *	cost);
+                        currentActor.updateWallet(0, -1 * cost);
                     }
                     currentActor.upgradeRank(upgradeRank);
                 }
@@ -342,22 +343,22 @@ public class Controller	extends JLayeredPane{
             }
         });
 
-        add(upg,new	Integer(0));
+        add(upg, new Integer(0));
 
-        JButton rankUp	= new	JButton("Upgrade Rank");
+        JButton rankUp = new JButton("Upgrade Rank");
         rankUp.setBackground(Color.orange);
-        rankUp.setBounds(1227,300,200,30);
+        rankUp.setBounds(1227, 300, 200, 30);
         rankUp.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
-                model.Actor	currentActor =	game.getCurrentActor();
-                if(currentActor.getCurrentRoom().equals("Casting Office")){
-                    if(castingOffice.canAffordUpgrade(currentActor.getCredit(),currentActor.getMoney(),currentActor.getRank())){
+                model.Actor currentActor = game.getCurrentActor();
+                if (currentActor.getCurrentRoom().equals("Casting Office")) {
+                    if (castingOffice.canAffordUpgrade(currentActor.getCredit(), currentActor.getMoney(), currentActor.getRank())) {
                         rankUp.setBackground(Color.GREEN);
                     }
                 }
             }
 
-            public	void mouseExited(MouseEvent e){
+            public void mouseExited(MouseEvent e) {
                 rankUp.setBackground(Color.orange);
             }
 
@@ -365,49 +366,49 @@ public class Controller	extends JLayeredPane{
                 clicked();
             }
 
-            private void clicked(){
-                if(currentActor.getCurrentRoom().equals("Casting Office")){
+            private void clicked() {
+                if (currentActor.getCurrentRoom().equals("Casting Office")) {
                     System.out.println("clicked upgrade rank");
-                    model.Actor	currentActor =	game.getCurrentActor();
+                    model.Actor currentActor = game.getCurrentActor();
                     String currentRoomName = currentActor.getCurrentRoom();
                     model.Room currentRoom = game.findRoom(currentRoomName);
-                    Collection<String> buyRanks =	castingOffice.getUpgradeOptions(currentActor.getCredit(),currentActor.getMoney(),currentActor.getRank());
-                    Vector<String>	buyRanksVector	= new	Vector<String>(buyRanks);
-                    DefaultComboBoxModel	model	= new	DefaultComboBoxModel(buyRanksVector);
+                    Collection < String > buyRanks = castingOffice.getUpgradeOptions(currentActor.getCredit(), currentActor.getMoney(), currentActor.getRank());
+                    Vector < String > buyRanksVector = new Vector < String > (buyRanks);
+                    DefaultComboBoxModel model = new DefaultComboBoxModel(buyRanksVector);
                     upg.setModel(model);
                     upg.setVisible(true);
                 }
             }
 
         });
-        add(rankUp,new	Integer(0));
+        add(rankUp, new Integer(0));
 
     }
 
-    public void initializeEndTurnButton(){
+    public void initializeEndTurnButton() {
 
-        JButton endTurn =	new JButton("End Turn");
+        JButton endTurn = new JButton("End Turn");
         endTurn.setBackground(Color.orange);
-        endTurn.setBounds(1227,450,200,30);
+        endTurn.setBounds(1227, 450, 200, 30);
         endTurn.addMouseListener(new MouseAdapter() {
 
-            public	void mouseEntered(MouseEvent e) {
-                if(game.getCurrentActor().isUnemployed()){
+            public void mouseEntered(MouseEvent e) {
+                if (game.getCurrentActor().isUnemployed()) {
                     endTurn.setBackground(Color.GREEN);
                 }
             }
 
-            public	void mouseExited(MouseEvent e){
+            public void mouseExited(MouseEvent e) {
                 endTurn.setBackground(Color.orange);
             }
 
-            public	void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 clicked();
             }
 
-            private	void clicked(){
-                if(game.getCurrentActor().isUnemployed()){
-                    moved	= false;
+            private void clicked() {
+                if (game.getCurrentActor().isUnemployed()) {
+                    moved = false;
                     game.incrementTurn();
                     System.out.println("clicked");
                 }
@@ -415,7 +416,7 @@ public class Controller	extends JLayeredPane{
 
         });
 
-        add(endTurn,new Integer(0));
+        add(endTurn, new Integer(0));
     }
 
 }
